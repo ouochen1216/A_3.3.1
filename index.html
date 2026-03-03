@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>混亂錢包裡有多少錢？</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    /* 自訂字體：請確定同資料夾有 BpmfZihiKaiStd-Regular.ttf */
+    @font-face {
+      font-family: "BpmfZihiKaiStd";
+      src: url("BpmfZihiKaiStd-Regular.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* 全局套用字體（包含按鈕） */
+    * {
+      box-sizing: border-box;
+      font-family: "BpmfZihiKaiStd", "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    :root {
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --danger: #dc2626;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #e5edff 0, #eef2ff 40%, #f9fafb 100%);
+      color: var(--text);
+      font-size: 25px; /* 放大後的基準 */
+    }
+
+    .wrapper {
+      width: min(960px, 100% - 32px);
+    }
+
+    .panel {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      padding: 30px 28px 34px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel h1 {
+      margin: 0 0 24px;
+      font-size: 2.5rem;
+      text-align: center;
+      letter-spacing: 0.08em;
+    }
+
+    .subtitle {
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--muted);
+      font-size: 1.15rem;
+    }
+
+    .btn {
+      border: none;
+      padding: 12px 28px;
+      border-radius: 999px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+      letter-spacing: 0.12em;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.32);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn.secondary {
+      background: #e5e7eb;
+      color: #111827;
+      box-shadow: none;
+      letter-spacing: 0.08em;
+      font-size: 1.05rem;
+    }
+
+    .btn.secondary:hover {
+      background: #d1d5db;
+      box-shadow: none;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* 遊戲畫面布局 */
+
+    .game-question {
+      font-size: 1.8rem;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: 0.14em;
+      margin-top: 10px;      /* 往下移一點 */
+      margin-bottom: 20px;
+    }
+
+    .game-layout {
+      display: flex;
+      flex-direction: column;
+      height: min(580px, 78vh);
+      gap: 14px;
+    }
+
+    .top-area {
+      flex: 7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #eef2ff, #e0f2fe);
+      padding: 18px 20px;
+    }
+
+    .bottom-area {
+      flex: 3;
+      display: flex;
+      gap: 16px;
+    }
+
+    .bottom-left {
+      flex: 7;
+      border-radius: var(--radius-md);
+      background: #f9fafb;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 14px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .bottom-right {
+      flex: 3;
+      border-radius: var(--radius-md);
+      background: #f9fafb;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #e5e7eb;
+    }
+
+    /* 上方：錢包與鈔幣顯示 */
+
+    .wallet-area {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      width: 100%;
+      max-width: 740px;
+    }
+
+    /* 錢包圖：請準備 wallet.png 放在同資料夾 */
+    .wallet-icon {
+      flex-shrink: 0;
+      width: 230px;
+      height: 170px;
+      background-image: url("wallet.png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    /* 1. 鈔票改成左右兩欄：左 1000/100，右 10/1 */
+    .money-list {
+      flex: 1;
+      display: flex;
+      gap: 24px;
+    }
+
+    .money-column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .money-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* 跟 1.2.1 一樣的鈔票樣式 */
+
+    .note-icon {
+      min-width: 110px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      text-align: center;
+      font-size: 25px;
+      margin-right: 10px;
+      background: #ffffff;
+      line-height: 1.2;
+    }
+
+    /* 指定顏色：
+       1000 = 藍、100 = 紅、10 = 銀、1 = 銅 */
+    .note-1000 { background: #dbeafe; border-color: #93c5fd; }
+    .note-100  { background: #fecaca; border-color: #f87171; }
+    .note-10   { background: #e5e7eb; border-color: #9ca3af; }
+    .note-1    { background: #fed7aa; border-color: #f97316; }
+
+    .money-count {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #111827;
+      min-width: 80px;
+    }
+
+    /* 答案欄＆計時器 */
+
+    .answer-label {
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-indent: 0.22em;
+      font-size: 1.4rem;
+    }
+
+    .answer-inputs {
+      display: flex;
+      gap: 10px;
+    }
+
+    .digit-input {
+      width: 58px;
+      height: 62px;
+      border-radius: 14px;
+      border: 2px solid #d1d5db;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      outline: none;
+      background: #ffffff;
+      transition: border 0.12s ease, box-shadow 0.12s ease, transform 0.08s ease;
+    }
+
+    .digit-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+      transform: translateY(-1px);
+    }
+
+    .answer-unit {
+      font-weight: 700;
+      margin-left: 6px;
+      font-size: 1.4rem;
+    }
+
+    /* 3. 輸入框＋按鈕改成同一排 */
+    .answer-main {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .answer-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .timer-label {
+      font-size: 1.15rem;
+      color: var(--muted);
+      letter-spacing: 0.3em;
+      text-indent: 0.3em;
+    }
+
+    .timer-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+    }
+
+    .timer-value span {
+      font-feature-settings: "tnum" 1, "lnum" 1;
+    }
+
+    /* 結果提示窗 */
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .modal {
+      background: #f9fafb;
+      border-radius: 20px;
+      padding: 24px 24px 20px;
+      width: min(380px, 84%);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .modal p {
+      margin: 0 0 14px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .modal .small {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .result-message {
+      font-size: 1.9rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-indent: 0.12em;
+      margin-bottom: 6px;
+    }
+
+    .result-correct {
+      color: #16a34a;
+    }
+
+    .result-wrong {
+      color: #dc2626;
+    }
+
+    @media (max-width: 720px) {
+      .panel {
+        padding: 22px 16px 26px;
+      }
+      .wallet-area {
+        flex-direction: column;
+        align-items: center;
+      }
+      .wallet-icon {
+        width: 210px;
+        height: 150px;
+      }
+      .game-layout {
+        height: auto;
+      }
+      .bottom-area {
+        flex-direction: column;
+        height: auto;
+      }
+      .answer-main {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- 起始畫面 -->
+    <div id="startScreen" class="panel">
+      <h1>混亂錢包裡有多少錢？</h1>
+      <p class="subtitle">看看你能不能在時間內，算出錢包裡一共有多少錢。</p>
+      <div class="center">
+        <button id="startBtn" class="btn">開始遊戲</button>
+      </div>
+    </div>
+
+    <!-- 遊戲畫面 -->
+    <div id="gameScreen" class="panel hidden">
+      <div class="game-question">數一數，錢包裡面有多少錢？</div>
+
+      <div class="game-layout">
+        <!-- 上方：錢包與金額 -->
+        <div class="top-area">
+          <div class="wallet-area">
+            <div class="wallet-icon" aria-label="錢包圖案"></div>
+
+            <!-- 1. 兩欄錢幣區 -->
+            <div class="money-list">
+              <div class="money-column">
+                <div class="money-row">
+                  <div class="note-icon note-1000">1000 元</div>
+                  <div class="money-count" id="count1000">x 0</div>
+                </div>
+                <div class="money-row">
+                  <div class="note-icon note-100">100 元</div>
+                  <div class="money-count" id="count100">x 0</div>
+                </div>
+              </div>
+              <div class="money-column">
+                <div class="money-row">
+                  <div class="note-icon note-10">10 元</div>
+                  <div class="money-count" id="count10">x 0</div>
+                </div>
+                <div class="money-row">
+                  <div class="note-icon note-1">1 元</div>
+                  <div class="money-count" id="count1">x 0</div>
+                </div>
+              </div>
+            </div>
+            <!-- 兩欄錢幣區結束 -->
+          </div>
+        </div>
+
+        <!-- 下方：答案欄與計時器 -->
+        <div class="bottom-area">
+          <!-- 左：答案欄 -->
+          <div class="bottom-left">
+            <!-- 3. 輸入框＋按鈕同一排 -->
+            <div class="answer-main">
+              <div class="answer-group">
+                <div class="answer-label">答案</div>
+                <div class="answer-inputs">
+                  <input id="d1000" class="digit-input" type="text" inputmode="numeric" maxlength="1" aria-label="千位">
+                  <input id="d100" class="digit-input" type="text" inputmode="numeric" maxlength="1" aria-label="百位">
+                  <input id="d10" class="digit-input" type="text" inputmode="numeric" maxlength="1" aria-label="十位">
+                  <input id="d1" class="digit-input" type="text" inputmode="numeric" maxlength="1" aria-label="個位">
+                </div>
+                <div class="answer-unit">元</div>
+              </div>
+
+              <button id="submitBtn" class="btn secondary">送出答案</button>
+            </div>
+          </div>
+
+          <!-- 右：計時器 -->
+          <div class="bottom-right">
+            <div class="timer-label">計時器</div>
+            <div class="timer-value"><span id="timer">0</span> 秒</div>
+            <!-- 4. 刪掉「從本題開始計時」 -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結果提示窗：一開始 display:none -->
+  <div id="resultModalBackdrop" class="modal-backdrop" style="display:none;">
+    <div class="modal">
+      <p id="modalMessage" class="result-message"></p>
+      <p id="modalDetail" class="small"></p>
+      <button id="nextBtn" class="btn secondary">下一題</button>
+    </div>
+  </div>
+
+  <script>
+    // 題目相關變數
+    let count1000 = 0;
+    let count100 = 0;
+    let count10 = 0;
+    let count1 = 0;
+    let totalAmount = 0;
+
+    // 計時器相關
+    let timer = 0;
+    let timerId = null;
+
+    const digitIds = ["d1000", "d100", "d10", "d1"];
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // 產生一題新題目：
+    // 1000 元一定 1–9 張，100/10/1 可以 0–9 張，答案必定是四位數
+    function generateQuestion() {
+      digitIds.forEach(id => {
+        const input = document.getElementById(id);
+        input.value = "";
+      });
+
+      count1000 = randomInt(1, 9); // 千位不能是 0
+      count100 = randomInt(0, 9);
+      count10 = randomInt(0, 9);
+      count1 = randomInt(0, 9);
+
+      totalAmount = count1000 * 1000 + count100 * 100 + count10 * 10 + count1;
+
+      document.getElementById("count1000").textContent = "x " + count1000;
+      document.getElementById("count100").textContent = "x " + count100;
+      document.getElementById("count10").textContent = "x " + count10;
+      document.getElementById("count1").textContent = "x " + count1;
+
+      resetTimer();
+      startTimer();
+
+      document.getElementById("d1000").focus();
+    }
+
+    function resetTimer() {
+      if (timerId !== null) {
+        clearInterval(timerId);
+      }
+      timer = 0;
+      document.getElementById("timer").textContent = timer;
+    }
+
+    function startTimer() {
+      if (timerId !== null) {
+        clearInterval(timerId);
+      }
+      timerId = setInterval(() => {
+        timer++;
+        document.getElementById("timer").textContent = timer;
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerId !== null) {
+        clearInterval(timerId);
+        timerId = null;
+      }
+    }
+
+    // 取得學生答案：四格都要有一位數，否則回傳 NaN
+    function getUserAnswer() {
+      const digits = digitIds.map(id => {
+        const v = document.getElementById(id).value.trim();
+        return v;
+      });
+
+      if (digits.some(v => v === "")) {
+        return NaN;
+      }
+
+      const [d1000, d100, d10, d1] = digits.map(v => parseInt(v, 10));
+      if ([d1000, d100, d10, d1].some(n => Number.isNaN(n))) {
+        return NaN;
+      }
+
+      return d1000 * 1000 + d100 * 100 + d10 * 10 + d1;
+    }
+
+    function openModal(message, detail, status) {
+      const backdrop = document.getElementById("resultModalBackdrop");
+      const msgEl = document.getElementById("modalMessage");
+
+      msgEl.textContent = message;
+      msgEl.classList.remove("result-correct", "result-wrong");
+
+      if (status === "correct") {
+        msgEl.classList.add("result-correct");
+      } else if (status === "wrong") {
+        msgEl.classList.add("result-wrong");
+      }
+
+      document.getElementById("modalDetail").textContent = detail || "";
+      backdrop.style.display = "flex";
+    }
+
+    function closeModal() {
+      const backdrop = document.getElementById("resultModalBackdrop");
+      backdrop.style.display = "none";
+    }
+
+    // 設定每個位數格子的行為
+    function setupDigitInputs() {
+      digitIds.forEach((id, index) => {
+        const input = document.getElementById(id);
+
+        input.addEventListener("input", (e) => {
+          let value = e.target.value.replace(/\D/g, "");
+          if (value.length > 1) {
+            value = value.slice(-1);
+          }
+          e.target.value = value;
+
+          if (value.length === 1) {
+            const nextId = digitIds[index + 1];
+            if (nextId) {
+              document.getElementById(nextId).focus();
+            }
+          }
+        });
+
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Backspace") {
+            if (input.value === "") {
+              const prevId = digitIds[index - 1];
+              if (prevId) {
+                document.getElementById(prevId).focus();
+              }
+            }
+          } else if (e.key === "Enter") {
+            document.getElementById("submitBtn").click();
+          }
+        });
+      });
+    }
+
+    // 事件綁定
+    document.getElementById("startBtn").addEventListener("click", () => {
+      document.getElementById("startScreen").classList.add("hidden");
+      document.getElementById("gameScreen").classList.remove("hidden");
+      generateQuestion();
+    });
+
+    document.getElementById("submitBtn").addEventListener("click", () => {
+      const userAns = getUserAnswer();
+
+      if (Number.isNaN(userAns)) {
+        openModal("還沒填完喔。", "請把四個位數都填上 0–9 的數字，再送出答案。", "info");
+        return;
+      }
+
+      stopTimer();
+
+      if (userAns === totalAmount) {
+        openModal("答對了！", `你花了 ${timer} 秒。`, "correct");
+      } else {
+        openModal("答錯了。", `正確答案是 ${totalAmount} 元，下次再想一想。`, "wrong");
+      }
+    });
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      closeModal();
+
+      const gameScreen = document.getElementById("gameScreen");
+      const startScreen = document.getElementById("startScreen");
+      if (gameScreen.classList.contains("hidden")) {
+        startScreen.classList.add("hidden");
+        gameScreen.classList.remove("hidden");
+      }
+
+      generateQuestion();
+    });
+
+    setupDigitInputs();
+
+    window.addEventListener("beforeunload", () => {
+      stopTimer();
+    });
+  </script>
+</body>
+</html>
