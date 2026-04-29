@@ -53,9 +53,27 @@
     .panel {
       background: var(--card);
       border-radius: var(--radius-lg);
-      padding: 30px 28px 34px;
+      padding: 30px 28px 20px;
       box-shadow: var(--shadow);
     }
+
+#gameScreen.panel{
+  display: flex;
+  flex-direction:column;
+  justify-content: center;
+}
+
+#startScreen {
+  min-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#startScreen .btn-row {
+  position: relative;
+  top: 18vh;
+}
 
     .panel h1 {
       margin: 0 0 24px;
@@ -81,14 +99,14 @@
     .btn {
       border: none;
       padding: 12px 28px;
-      border-radius: 999px;
-      font-size: 1.2rem;
+      border-radius: 14px;
+      font-size: 1.6rem;
       cursor: pointer;
       background: var(--accent);
       color: #fff;
       letter-spacing: 0.08em;
       transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
-      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+      box-shadow: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -98,7 +116,7 @@
     .btn:hover {
       background: #1d4ed8;
       transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.32);
+      box-shadow: none;
     }
 
     .btn:active {
@@ -110,7 +128,9 @@
       background: #e5e7eb;
       color: #111827;
       box-shadow: none;
-      font-size: 1.05rem;
+      font-size: 1.6rem;
+      height: 62px;
+      padding: 0 28px;
     }
 
     .btn.secondary:hover {
@@ -121,12 +141,15 @@
     .btn.danger {
       background: #ef4444;
       color: #fff;
-      box-shadow: 0 10px 25px rgba(239, 68, 68, 0.22);
+      box-shadow: none;
+      font-size: 1.6rem;
+      height: 62px;
+      padding: 0 28px;
     }
 
     .btn.danger:hover {
       background: #dc2626;
-      box-shadow: 0 14px 30px rgba(220, 38, 38, 0.28);
+      box-shadow: none;
     }
 
     .hidden {
@@ -135,11 +158,11 @@
 
     .game-topbar {
       display: flex;
-      justify-content: space-between;
       align-items: center;
       gap: 12px;
-      margin-bottom: 4px;
-      flex-wrap: wrap;
+      margin-top: -8px;
+      margin-bottom: 8px;
+      flex-wrap: nowrap;
     }
 
     .topbar-right {
@@ -149,20 +172,25 @@
       margin-left: auto;
     }
 
-    .game-question {
-      font-size: 1.8rem;
-      font-weight: 600;
-      text-align: center;
-      letter-spacing: 0.14em;
-      margin-top: 14px;
-      margin-bottom: 20px;
-    }
+.game-question {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.14em;
+
+  margin: -8px 0 20px;
+  padding: 10px 16px;
+
+  border: 2px solid #d1d5db;
+  border-radius: 12px;
+  background: #ffffff;
+}
 
     .game-layout {
       display: flex;
       flex-direction: column;
-      height: min(580px, 78vh);
-      gap: 14px;
+      height: min(500px, 70vh);
+      gap: 12px;
     }
 
     .top-area {
@@ -171,8 +199,9 @@
       align-items: center;
       justify-content: center;
       border-radius: var(--radius-md);
-      background: linear-gradient(135deg, #eef2ff, #e0f2fe);
-      padding: 18px 20px;
+      background: #ffffff;
+      padding: 14px 0px;
+      border: 2px solid #d1d5db;   /* ⭐ 新增這行 */
     }
 
     .bottom-area {
@@ -182,109 +211,176 @@
     }
 
     .bottom-left {
-      flex: 7;
+      flex: 2.5;
       border-radius: var(--radius-md);
-      background: #f9fafb;
-      padding: 14px 18px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 14px;
-      border: 1px solid #e5e7eb;
-    }
-
-    .bottom-right {
-      flex: 3;
-      border-radius: var(--radius-md);
-      background: #f9fafb;
-      padding: 14px 18px;
+      background: #ffffff;
+      padding:  14px 18px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       gap: 8px;
-      border: 1px solid #e5e7eb;
+      border: 2px solid #d1d5db;
+    }
+
+    .bottom-right {
+      flex: 7;
+      border-radius: var(--radius-md);
+      background: #ffffff;
+      padding: 20px 14px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 14px;
+      border: 2px solid #d1d5db;
+  position: relative;   /* ⭐ 讓 absolute 有基準 */
     }
 
     .wallet-area {
       display: flex;
       align-items: center;
-      gap: 30px;
+      gap: 0px;
       width: 100%;
-      max-width: 740px;
+      max-width: 900px;
+      transform: translateX(-20px); 
     }
 
     .wallet-icon {
       flex-shrink: 0;
-      width: 230px;
-      height: 170px;
+      width: clamp(280px, 30vw, 360px);
+      aspect-ratio: 23 / 17;
       background-image: url("wallet.png");
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+       margin: 0 ;
+       margin-right: 20px;
+       transform: translateX(0px);
     }
 
     .money-list {
       flex: 1;
       display: flex;
-      gap: 24px;
+      gap: 28px;
+      align-items: center;
+      margin-left: 0;      /* 先歸零 */
+      margin-right: 100px;  /* ⭐ 改成往左移 */
     }
 
     .money-column {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 14px;
+      justify-content: center;
     }
+
+.money-column:last-child {
+  flex: 1;   /* ⭐ 讓右欄撐滿 */
+}
 
     .money-row {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
+      min-height: 60px;
     }
 
+.money-row:has(.note-1000),
+.money-row:has(.note-100),
+.money-row:has(.note-10),
+.money-row:has(.note-1) {
+  justify-content: space-between;
+}
+
+.money-row:has(.note-1000) .money-count,
+.money-row:has(.note-100) .money-count,
+.money-row:has(.note-10) .money-count,
+.money-row:has(.note-1) .money-count {
+  text-align: center;
+  width: 90px;
+}
+
     .note-icon {
-      min-width: 110px;
-      padding: 6px 10px;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
+      min-width: 164px;
+      height: 96px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 2px solid #d1d5db;
       text-align: center;
-      font-size: 25px;
+      font-size: 24px;
       margin-right: 10px;
       background: #ffffff;
       line-height: 1.2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .note-1000 { background: #dbeafe; border-color: #93c5fd; }
     .note-100  { background: #fecaca; border-color: #f87171; }
+
+    .note-10,
+    .note-1 {
+      min-width: 96px;
+      width: 96px;
+      height: 96px;
+      padding: 0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+
     .note-10   { background: #e5e7eb; border-color: #9ca3af; }
     .note-1    { background: #fed7aa; border-color: #f97316; }
 
     .money-count {
-      font-size: 1.3rem;
+      font-size: 1.7rem;
       font-weight: 700;
       color: #111827;
-      min-width: 80px;
+      min-width: 90px;
     }
 
-    .answer-label {
-      font-weight: 700;
-      letter-spacing: 0.22em;
-      text-indent: 0.22em;
-      font-size: 1.4rem;
-    }
+.answer-label {
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  font-size: 1.8rem;
 
-    .answer-inputs {
-      display: flex;
-      gap: 10px;
-    }
+  min-width: 90px;
+
+  display: flex;              /* ⭐ 改這個 */
+  align-items: center;        /* ⭐ 垂直置中 */
+  justify-content: center;    /* ⭐ 水平置中 */
+ transform: translateX(20px);   /* ⭐ 往右推（調這個） */
+}
+
+/* ⭐ 讓答案跟計時器完全對齊 */
+.answer-label-box {
+  min-width: 90px;        /* ⭐ 跟計時器一樣 */
+  text-align: center;
+
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+ .answer-inputs {
+  display: flex;
+  gap: 10px;
+
+  margin-left: 45px; /* ⭐ 只推輸入框 */
+}
 
     .digit-input {
-      width: 58px;
-      height: 62px;
+      width: 65px;
+      height: 70px;
       border-radius: 14px;
       border: 2px solid #d1d5db;
       text-align: center;
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       font-weight: 700;
       outline: none;
       background: #ffffff;
@@ -300,23 +396,36 @@
     .answer-unit {
       font-weight: 700;
       margin-left: 6px;
-      font-size: 1.4rem;
+      font-size: 1.8rem;
     }
 
-    .answer-main {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
+.answer-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: nowrap;
+}
 
-    .answer-group {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
+.answer-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-65%);
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.answer-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: nowrap;
+  min-width: 0;
+
+  margin-left: 20px; /* ⭐ 往右推 */
+}
 
     .timer-label {
       font-size: 1.15rem;
@@ -446,7 +555,7 @@
     }
 
     th, td {
-      border: 1px solid #e5e7eb;
+      border: 2px solid #e5e7eb;
       padding: 10px 8px;
       text-align: center;
       vertical-align: middle;
@@ -478,6 +587,61 @@
       font-weight: 700;
     }
 
+.timer-box {
+  display: flex;
+  align-items: center;
+
+  flex: 1;
+  width: 100%;
+  height: 62px;
+  padding: 0 18px;
+
+  border: 2px solid #d1d5db;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.timer-box-label {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+
+  min-width: 90px;   /* ⭐ 關鍵：固定左側寬度 */
+}
+
+.timer-box-value {
+  flex: 1;                 /* ⭐ 吃掉剩下空間 */
+  text-align: center;      /* ⭐ 在右側區域置中 */
+
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.timer-box-value span {
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+.topbar-right {
+  display: flex;
+  gap: 10px;
+  flex-wrap: nowrap;
+  margin-left: 0;
+  flex-shrink: 0;
+}
+
+
+#submitBtn {
+  height: 62px;
+  padding: 0 28px;
+  align-self: flex-end;
+  font-size: 1.6rem;
+}
+
+
     @media (max-width: 720px) {
       .panel {
         padding: 22px 16px 26px;
@@ -486,16 +650,16 @@
       .wallet-area {
         flex-direction: column;
         align-items: center;
+        transform: translateX(-40px);
       }
 
       .wallet-icon {
-        width: 210px;
-        height: 150px;
+        width: clamp(240px, 58vw, 320px);
       }
 
       .money-list {
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
       }
 
       .game-layout {
@@ -520,6 +684,9 @@
         font-size: 0.84rem;
         padding: 8px 6px;
       }
+
+
+
     }
   </style>
 </head>
@@ -535,15 +702,22 @@
     </div>
 
     <div id="gameScreen" class="panel hidden">
-      <div class="game-topbar">
-        <div></div>
-        <div class="topbar-right">
-          <button id="openRecordBtnGame" class="btn secondary">遊戲紀錄</button>
-          <button id="exitBtn" class="btn danger">離開遊戲</button>
-        </div>
-      </div>
-
+     
       <div class="game-question">數一數，錢包裡面有多少錢？</div>
+
+<div class="game-topbar">
+  <div class="timer-box">
+    <span class="timer-box-label">計時器</span>
+    <span class="timer-box-value"><span id="timer">0</span> 秒</span>
+  </div>
+
+  <div class="topbar-right">
+    <button id="openRecordBtnGame" class="btn secondary">遊戲紀錄</button>
+    <button id="exitBtn" class="btn danger">離開遊戲</button>
+  </div>
+</div>
+
+
 
       <div class="game-layout">
         <div class="top-area">
@@ -575,32 +749,25 @@
           </div>
         </div>
 
-        <div class="bottom-area">
-          <div class="bottom-left">
-            <div class="answer-main">
-              <div class="answer-group">
-                <div class="answer-label">答案</div>
-                <div class="answer-inputs">
-                  <input id="d1000" class="digit-input" type="text" inputmode="numeric" maxlength="1" aria-label="千位">
-                  <input id="d100" class="digit-input" type="text" inputmode="numeric" maxlength="1" aria-label="百位">
-                  <input id="d10" class="digit-input" type="text" inputmode="numeric" maxlength="1" aria-label="十位">
-                  <input id="d1" class="digit-input" type="text" inputmode="numeric" maxlength="1" aria-label="個位">
-                </div>
-                <div class="answer-unit">元</div>
-              </div>
+<div class="bottom-area">
+  <div class="bottom-right">
+    <div class="answer-main">
 
-              <button id="submitBtn" class="btn secondary">送出答案</button>
-            </div>
-          </div>
-
-          <div class="bottom-right">
-            <div class="timer-label">計時器</div>
-            <div class="timer-value"><span id="timer">0</span> 秒</div>
-          </div>
+  <div class="answer-label">答案</div>
+     <div class="answer-center">
+        <div class="answer-inputs">
+          <input id="d1000" class="digit-input" type="text" inputmode="numeric" maxlength="1" aria-label="千位">
+          <input id="d100" class="digit-input" type="text" inputmode="numeric" maxlength="1" aria-label="百位">
+          <input id="d10" class="digit-input" type="text" inputmode="numeric" maxlength="1" aria-label="十位">
+          <input id="d1" class="digit-input" type="text" inputmode="numeric" maxlength="1" aria-label="個位">
         </div>
+        <div class="answer-unit">元</div>
       </div>
+
+      <button id="submitBtn" class="btn secondary">送出答案</button>
     </div>
   </div>
+</div>
 
   <div id="resultModalBackdrop" class="modal-backdrop hidden" style="display:none;">
     <div class="modal">
